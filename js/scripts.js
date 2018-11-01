@@ -59,7 +59,10 @@ function verify(element){
     if(currentDot == element.srcElement.innerHTML){
         element.srcElement.className = "correct-dot";
         if(currentDot === dotsPerLevel && timeLimit !== 0 )
-            alert("You Won!");
+        {
+            setTimeout(function() { alert("You Won!"); }, 200);
+            clearInterval(timerStart);
+        }
         currentDot++;
     }
     else

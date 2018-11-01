@@ -37,3 +37,7 @@ header {
 #gameBar{
     width: 200px;
 }
+
+.jumbotron{
+    height:100vh;
+}
