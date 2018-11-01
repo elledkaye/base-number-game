@@ -1,5 +1,5 @@
 header {
-    display: flex;
+    display: flex !important;
     justify-content: space-evenly;
 }
 
@@ -28,4 +28,12 @@ header {
     display: inline-block;
     text-align: center;
     background-color: red;
+}
+
+#home{
+    height: 24px;
+}
+
+#gameBar{
+    width: 200px;
 }

@@ -1,41 +1,38 @@
-var timeLimit, timerStart, currentDot;
+var timeLimit, timerStart, currentDot, progress;
 var timer = document.getElementById('timer');
 var playingField = document.getElementById('playingField');
 const maxTimeLimit = 10;
-const initialState = "Start";
-const restartState = "Quit";
 const second_interval = 1000;
 const dotsPerLevel = 10;
 
-function play(playButton){
-    if(playButton.innerHTML === initialState){
-        playButton.innerHTML = restartState;
-        timeLimit = maxTimeLimit;
-        currentDot = 1;
-        removeDots();
-        addDots();
-        timerStart = setInterval(time, second_interval);
-    }
-    else{
-        playButton.innerHTML = initialState;
-        clearInterval(timerStart);
-        setTimeLimit();
-    }
+
+function play(){
+    currentDot = 1;
+    timeLimit = maxTimeLimit;
+    progress = 100;
+    addDots();
+    timerStart = setInterval(time, second_interval);
 }
 
 function time(){
     timeLimit--;
     if(timeLimit >= 0){
-        timer.innerHTML = timeLimit;
+        //updating the progress bar 
+        progress = progress - maxTimeLimit;
+        $( "#gameBarProgress" ).css('width',(progress+'%'));
+        if(progress <= 66 && progress > 33 ){
+            $( "#gameBarProgress" ).removeClass('bg-success');
+            $( "#gameBarProgress" ).addClass('bg-warning');
+        }
+        else if( progress <= 33 ){
+            $( "#gameBarProgress" ).removeClass('bg-warning');
+            $( "#gameBarProgress" ).addClass('bg-danger');
+        }
     }
     else{
         alert("You Lost!");
         clearInterval(timerStart);
     }
-}
-
-function setTimeLimit(){
-    timer.innerHTML = maxTimeLimit;
 }
 
 function addDots(){
@@ -61,7 +58,7 @@ function removeDots(){
 function verify(element){
     if(currentDot == element.srcElement.innerHTML){
         element.srcElement.className = "correct-dot";
-        if(currentDot === dotsPerLevel && timer.innerHTML !== "0" )
+        if(currentDot === dotsPerLevel && timeLimit !== 0 )
             alert("You Won!");
         currentDot++;
     }
