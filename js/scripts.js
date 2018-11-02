@@ -4,9 +4,13 @@ var playingField = document.getElementById('playingField');
 const maxTimeLimit = 10;
 const second_interval = 1000;
 const dotsPerLevel = 10;
+var stateDefault = { level: 1 };
+var localStore = JSON.parse(localStorage.getItem('state'));
 
+var state = ( localStore === undefined) ? stateDefault : localStore; 
 
 function play(){
+    $('#level').html(state.level);
     currentDot = 1;
     timeLimit = maxTimeLimit;
     progress = 100;
@@ -18,7 +22,6 @@ function time(){
     timeLimit--;
     if(timeLimit >= 0){
         //updating the progress bar 
-        progress = progress - maxTimeLimit;
         $( "#gameBarProgress" ).css('width',(progress+'%'));
         if(progress <= 66 && progress > 33 ){
             $( "#gameBarProgress" ).removeClass('bg-success');
@@ -28,6 +31,13 @@ function time(){
             $( "#gameBarProgress" ).removeClass('bg-warning');
             $( "#gameBarProgress" ).addClass('bg-danger');
         }
+        else if(progress === 100)
+        {
+            $( "#gameBarProgress" ).removeClass('bg-warning');
+            $( "#gameBarProgress" ).removeClass('bg-danger');
+            $( "#gameBarProgress" ).addClass('bg-success');
+        }
+        progress = progress - maxTimeLimit;
     }
     else{
         alert("You Lost!");
@@ -56,18 +66,30 @@ function removeDots(){
 }
 
 function verify(element){
-    if(currentDot == element.srcElement.innerHTML){
-        element.srcElement.className = "correct-dot";
-        if(currentDot === dotsPerLevel && timeLimit !== 0 )
-        {
-            setTimeout(function() { alert("You Won!"); }, 200);
-            clearInterval(timerStart);
-        }
-        currentDot++;
-    }
-    else
+    if(timeLimit > 0)
     {
-        if(element.srcElement.className !== "correct-dot")
-            element.srcElement.className = "incorrect-dot";
+        if(currentDot == element.srcElement.innerHTML){
+            element.srcElement.className = "correct-dot";
+            if(currentDot === dotsPerLevel && timeLimit !== 0 )
+            {
+                setTimeout(function() { 
+                    alert("Go to next level!");
+                    play(); 
+                }, 500);
+                state.level++;
+                localStorage.setItem('state', JSON.stringify(state));
+                clearInterval(timerStart);
+                removeDots();
+                timeLimit = maxTimeLimit;
+                progress = 100;
+                time();
+            }
+            currentDot++;
+        }
+        else
+        {
+            if(element.srcElement.className !== "correct-dot")
+                element.srcElement.className = "incorrect-dot";
+        }
     }
 }
